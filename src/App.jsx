@@ -346,7 +346,7 @@ if (page === "matches") {
   type="number"
   min="0"
   placeholder={`${match.team1} score`}
-  value={scorePicks[match.id]?.team1 || ""}
+  value={scorePicks[match.id]?.team1 ?? ""}
   disabled={isLocked}
   onChange={(e) =>
     setScorePicks((prev) => ({
@@ -363,7 +363,7 @@ if (page === "matches") {
   type="number"
   min="0"
   placeholder={`${match.team2} score`}
-  value={scorePicks[match.id]?.team2 || ""}
+  value={scorePicks[match.id]?.team2 ?? ""}
   disabled={isLocked}
   onChange={(e) =>
     setScorePicks((prev) => ({
