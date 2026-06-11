@@ -225,22 +225,40 @@ if (page === "matches") {
 
       <button onClick={() => setPage("home")}>Back</button>
 
-      {todaysMatches.map((match) => (
+      {todaysMatches.map((match) => {
+  const isLocked = new Date() > new Date(match.kickoffTime);
+
+  return (
+    
   <div key={match.id} className="match-card">
     <h3>{match.team1} vs {match.team2}</h3>
-
-    <button onClick={() => savePick(match.id, match.team1)}>
+{isLocked && (
+  <p style={{ color: "red", fontWeight: "bold" }}>
+    🔒 Picks Locked
+  </p>
+)}
+    <button
+  disabled={isLocked}
+  onClick={() => savePick(match.id, match.team1)}
+>
       {match.team1}
     </button>
 
-    <button onClick={() => savePick(match.id, "Draw")}>
+  
+  <button
+  disabled={isLocked}
+  onClick={() => savePick(match.id, "Draw")}
+>
       Draw
     </button>
-
-    <button onClick={() => savePick(match.id, match.team2)}>
-      {match.team2}
-    </button>
+<button
+  disabled={isLocked}
+  onClick={() => savePick(match.id, match.team2)}
+>
+  {match.team2}
+</button>
 <input
+disabled={isLocked}
   placeholder="Player you think will score"
   value={playerPicks[match.id] || ""}
   onChange={(e) =>
@@ -255,7 +273,7 @@ if (page === "matches") {
 
     <hr />
   </div>
-))}
+)})}
 </div>);
 }
 
