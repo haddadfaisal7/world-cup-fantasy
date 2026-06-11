@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  color: white;
+  font-family: Arial, sans-serif;
+}body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #06162e, #123c69, #0b6e99);
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+button {
+  margin: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+input {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  margin: 6px;
+}
+
+hr {
+  width: 80%;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.match-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px auto;
+  width: 80%;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+h1 {
+  color: white;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.match-card h3 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.match-card button {
+  background: white;
+  color: #123c69;
+}
+
+.match-card input {
+  min-width: 220px;
+}
