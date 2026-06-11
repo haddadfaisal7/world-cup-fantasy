@@ -51,7 +51,11 @@ const savePick = async (matchId, choice) => {
   match: matchId,
   winnerPick: choice,
   playerPick: playerPicks[matchId] || "",
-  points: 0
+  scorePrediction: scorePicks[matchId] || {
+    team1: 0,
+    team2: 0,
+  },
+  points: 0,
 });
 
   alert("Pick saved!");
@@ -271,7 +275,7 @@ if (page === "matches") {
       ...prev,
       [match.id]: {
         ...prev[match.id],
-        team1: e.target.value,
+        team1: Number(e.target.value)
       },
     }))
   }
@@ -288,7 +292,7 @@ if (page === "matches") {
       ...prev,
       [match.id]: {
         ...prev[match.id],
-        team2: e.target.value,
+       team2: Number(e.target.value)
       },
     }))
   }
