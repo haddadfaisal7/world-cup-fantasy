@@ -12,6 +12,7 @@ const [playerPicks, setPlayerPicks] = useState({});
 const [leaderboard, setLeaderboard] = useState([]);
 const [todaysMatches, setTodaysMatches] = useState([]);
 const [allPredictions, setAllPredictions] = useState([]); 
+const [scorePicks, setScorePicks] = useState({});
 const [adminMatchId, setAdminMatchId] = useState("");
 const [adminWinner, setAdminWinner] = useState(""); 
 const ADMIN_EMAIL = "haddad.faisal7@gmail.com";
@@ -257,6 +258,43 @@ if (page === "matches") {
 >
   {match.team2}
 </button>
+<br />
+
+<input
+  type="number"
+  min="0"
+  placeholder={`${match.team1} score`}
+  value={scorePicks[match.id]?.team1 || ""}
+  disabled={isLocked}
+  onChange={(e) =>
+    setScorePicks((prev) => ({
+      ...prev,
+      [match.id]: {
+        ...prev[match.id],
+        team1: e.target.value,
+      },
+    }))
+  }
+/>
+
+<input
+  type="number"
+  min="0"
+  placeholder={`${match.team2} score`}
+  value={scorePicks[match.id]?.team2 || ""}
+  disabled={isLocked}
+  onChange={(e) =>
+    setScorePicks((prev) => ({
+      ...prev,
+      [match.id]: {
+        ...prev[match.id],
+        team2: e.target.value,
+      },
+    }))
+  }
+/>
+
+<br />
 <input
 disabled={isLocked}
   placeholder="Player you think will score"
