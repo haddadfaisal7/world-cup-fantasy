@@ -15,6 +15,9 @@ const [allPredictions, setAllPredictions] = useState([]);
 const [scorePicks, setScorePicks] = useState({});
 const [adminMatchId, setAdminMatchId] = useState("");
 const [adminWinner, setAdminWinner] = useState(""); 
+const [adminTeam1Score, setAdminTeam1Score] = useState("");
+const [adminTeam2Score, setAdminTeam2Score] = useState("");
+const [adminPlayerGoals, setAdminPlayerGoals] = useState("");
 const ADMIN_EMAIL = "haddad.faisal7@gmail.com";
 const signIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -77,6 +80,7 @@ const loadPick = async () => {
   setPicks(userPicks);
   setPage("mypicks");
 };
+
 const loadMatches = async () => {
   const snapshot = await getDocs(collection(db, "Matches"));
 
@@ -91,7 +95,10 @@ const loadMatches = async () => {
 const saveResult = async () => {
   await setDoc(doc(db, "results", adminMatchId), {
     winner: adminWinner,
-    completed: true,
+team1Score: Number(adminTeam1Score),
+team2Score: Number(adminTeam2Score),
+playerGoals: adminPlayerGoals,
+completed: true,
   });
 
   alert("Result saved!");
@@ -128,6 +135,24 @@ if (result && result.completed === true) {
   if (pickWinner === resultWinner) {
     points += 1;
   }
+// Exact score prediction = 3 points
+// Exact score prediction = 3 points
+if (
+  Number(pick.scorePrediction?.team1) === Number(result.team1Score) &&
+  Number(pick.scorePrediction?.team2) === Number(result.team2Score)
+) {
+  points += 3;
+}
+// Player goals = 1 point per goal
+if (pick.playerPick && result.playerGoals) {
+  const goals = result.playerGoals
+    .toLowerCase()
+    .split(",")
+    .map((name) => name.trim())
+    .filter((name) => name === pick.playerPick.toLowerCase().trim()).length;
+
+  points += goals;
+}
 }
 
 if (!players[pick.userId]) {
@@ -137,7 +162,7 @@ if (!players[pick.userId]) {
 lastPick: pick.winnerPick,  
 };
 }
-players[pick.userId].points = players[pick.userId].points + points;
+players[pick.userId].points += points;
 });
 
 const data = Object.values(players).sort((a, b) => b.points - a.points);
@@ -178,8 +203,61 @@ if (page === "admin") {
       />
 
       <br /><br />
+<br /><br />
 
-      <button onClick={saveResult}>Save Result</button>
+<input
+  type="number"
+  placeholder="Team 1 actual score"
+  value={adminTeam1Score}
+  onChange={(e) => setAdminTeam1Score(e.target.value)}
+/>
+
+<br /><br />
+
+<input
+  type="number"
+  placeholder="Team 2 actual score"
+  value={adminTeam2Score}
+  onChange={(e) => setAdminTeam2Score(e.target.value)}
+/>
+  <br /><br />
+
+<input
+  placeholder="Player goals (Son:2, Jimenez:1)"
+  value={adminPlayerGoals}
+  onChange={(e) => setAdminPlayerGoals(e.target.value)}
+/>
+      <button
+  onClick={saveResult}
+  style={{
+    background: "#22c55e",
+    color: "white",
+    border: "none",
+    padding: "12px 20px",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold"
+  }}
+>
+  Save Result
+</button>
+<br />
+<br />
+
+<button
+  onClick={loadLeaderboard}
+  style={{
+    background: "#3b82f6",
+    color: "white",
+    border: "none",
+    padding: "12px 20px",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold"
+  }}
+>
+  Recalculate Leaderboard
+</button>
     </div>
   );
 }
@@ -215,7 +293,7 @@ if (page === "leaderboard") {
           <h3>
             #{index + 1} {player.name}
           </h3>
-          <p>Pick: {player.lastPick}</p>
+          
           <p>Points: {player.points || 0}</p>
           <hr />
         </div>
