@@ -64,21 +64,15 @@ const savePick = async (matchId, choice) => {
   alert("Pick saved!");
 };
 const loadMatches = async (nextPage = "matches") => {
-  const snapshot = await getDocs(collection(db, "matches"));
+  const snapshot = await getDocs(collection(db, "Matches"));
 
-  const userPicks = {};
+ const matches = snapshot.docs.map((doc) => ({
+  id: doc.id,
+  ...doc.data(),
+}));
 
-  snapshot.docs.forEach((doc) => {
-    const data = doc.data();
-
-    if (data.userId === user.uid) {
-    userPicks[data.matchId] =
-  data.winnerPick + " | Player: " + data.playerPick;
-    }
-  });
-
-  setPicks(userPicks);
-  setPage("mypicks");
+setTodaysMatches(matches);
+setPage(nextPage);
 };
 
 const loadMatches = async (nextPage = "matches") => {
