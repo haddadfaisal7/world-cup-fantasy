@@ -63,8 +63,8 @@ const savePick = async (matchId, choice) => {
 
   alert("Pick saved!");
 };
-const loadPick = async () => {
-  const snapshot = await getDocs(collection(db, "picks"));
+const loadMatches = async (nextPage = "matches") => {
+  const snapshot = await getDocs(collection(db, "matches"));
 
   const userPicks = {};
 
@@ -81,7 +81,7 @@ const loadPick = async () => {
   setPage("mypicks");
 };
 
-const loadMatches = async () => {
+const loadMatches = async (nextPage = "matches") => {
   const snapshot = await getDocs(collection(db, "Matches"));
 
   const matches = snapshot.docs.map((doc) => ({
@@ -90,7 +90,7 @@ const loadMatches = async () => {
   }));
 
   setTodaysMatches(matches);
-  setPage("matches");
+  setPage(nextPage);
 };
 const saveResult = async () => {
   await setDoc(doc(db, "results", adminMatchId), {
@@ -461,9 +461,7 @@ return (
          <button onClick={loadAllPredictions}>Everyone's Predictions</button>
           <button onClick={loadPick}>My Picks</button>
          {user?.email === ADMIN_EMAIL && (
-  <button onClick={() => setPage("admin")}>
-    Admin
-  </button>
+  <button onClick={() => loadMatches("admin")}>Admin</button>
 )}
           <button onClick={logout}>Sign Out</button>
         </>
