@@ -188,23 +188,47 @@ if (page === "admin") {
 
       <br /><br />
 
-      <input
-        placeholder="Match ID"
-        value={adminMatchId}
-        onChange={(e) => setAdminMatchId(e.target.value)}
-      />
+      <select
+  value={adminMatchId}
+  onChange={(e) => setAdminMatchId(e.target.value)}
+>
+  <option value="">Select Match</option>
+
+  {todaysMatches.map((match) => (
+    <option key={match.id} value={match.id}>
+      {match.team1} vs {match.team2}
+    </option>
+  ))}
+</select>
 
       <br /><br />
 
-      <input
-        placeholder="Winner"
-        value={adminWinner}
-        onChange={(e) => setAdminWinner(e.target.value)}
-      />
+      <select
+  value={adminWinner}
+  onChange={(e) => setAdminWinner(e.target.value)}
+>
+  <option value="">Select Winner</option>
+
+  {todaysMatches
+    .find(m => m.id === adminMatchId)
+    ?.team1 && (
+      <>
+        <option value={todaysMatches.find(m => m.id === adminMatchId).team1}>
+          {todaysMatches.find(m => m.id === adminMatchId).team1}
+        </option>
+
+        <option value={todaysMatches.find(m => m.id === adminMatchId).team2}>
+          {todaysMatches.find(m => m.id === adminMatchId).team2}
+        </option>
+      </>
+    )}
+</select>
 
       <br /><br />
 <br /><br />
-
+<p>
+  {todaysMatches.find(m => m.id === adminMatchId)?.team1}
+</p>
 <input
   type="number"
   placeholder="Team 1 actual score"
@@ -213,7 +237,9 @@ if (page === "admin") {
 />
 
 <br /><br />
-
+<p>
+  {todaysMatches.find(m => m.id === adminMatchId)?.team2}
+</p>
 <input
   type="number"
   placeholder="Team 2 actual score"
