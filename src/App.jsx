@@ -64,6 +64,7 @@ const savePick = async (matchId, choice) => {
   alert("Pick saved!");
 };
 const loadMatches = async (nextPage = "Matches") => {
+  console.log("LOAD MATCHES CLICKED");
   const snapshot = await getDocs(collection(db, "Matches"));
 
  const matches = snapshot.docs.map((doc) => ({
@@ -88,9 +89,10 @@ setPage(nextPage);
         data.winnerPick + " | Player: " + data.playerPick;
     }
   });
-
+console.log("USER PICKS:", userPicks);
   setPicks(userPicks);
   setPage("myPicks");
+
 };
 const saveResult = async () => {
   await setDoc(doc(db, "results", adminMatchId), {
@@ -423,7 +425,7 @@ disabled={isLocked}
 </div>);
 }
 
-if (page === "mypicks") {
+if (page === "myPicks") {
   return (
     <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
       <h1>📋 My Picks</h1>
@@ -454,7 +456,10 @@ return (
         <>
           <h2>Welcome, {user.displayName}</h2>
           <p>Points: 0</p>
-          <button onClick={loadMatches}>
+          <button onClick={() => {
+  console.log("PREDICT BUTTON CLICKED");
+  loadMatches("matches");
+}}>
   Predict Matches
 </button>
           <button onClick={loadLeaderboard}>Leaderboard</button>
