@@ -18,7 +18,101 @@ const [adminWinner, setAdminWinner] = useState("");
 const [adminTeam1Score, setAdminTeam1Score] = useState("");
 const [adminTeam2Score, setAdminTeam2Score] = useState("");
 const [adminPlayerGoals, setAdminPlayerGoals] = useState("");
+const flags = {
+  Mexico: "mx",
+  "South Africa": "za",
+  "South Korea": "kr",
+  Czechia: "cz",
+
+  Canada: "ca",
+  Bosnia: "ba",
+  Qatar: "qa",
+  Switzerland: "ch",
+
+  Brazil: "br",
+  Morocco: "ma",
+  Haiti: "ht",
+  Scotland: "gb-sct",
+
+  USA: "us",
+  Paraguay: "py",
+  Australia: "au",
+  Turkey: "tr",
+
+  Germany: "de",
+  Curacao: "cw",
+  Ecuador: "ec",
+  "Ivory Coast": "ci",
+
+  Netherlands: "nl",
+  Japan: "jp",
+  Sweden: "se",
+  Tunisia: "tn",
+
+  Belgium: "be",
+  Egypt: "eg",
+  Iran: "ir",
+  "New Zealand": "nz",
+
+  Spain: "es",
+  "Cape Verde": "cv",
+  "Saudi Arabia": "sa",
+  Uruguay: "uy",
+
+  France: "fr",
+  Senegal: "sn",
+  Iraq: "iq",
+  Norway: "no",
+
+  Argentina: "ar",
+  Algeria: "dz",
+  Austria: "at",
+  Jordan: "jo",
+
+  Portugal: "pt",
+  "DR Congo": "cd",
+  Uzbekistan: "uz",
+  Colombia: "co",
+
+  England: "gb-eng",
+  Croatia: "hr",
+  Ghana: "gh",
+  Panama: "pa"
+};
 const ADMIN_EMAIL = "haddad.faisal7@gmail.com";
+if (page === "myPicks") {
+  return (
+    <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
+      <h1>📌 My Picks</h1>
+
+      <button onClick={() => setPage("home")}>Back</button>
+
+      <br /><br />
+
+      {Object.entries(picks).length === 0 ? (
+        <p>No picks yet.</p>
+      ) : (
+        Object.entries(picks).map(([matchId, choice]) => (
+          <div
+            key={matchId}
+            style={{
+              background: "rgba(255,255,255,0.12)",
+              padding: "15px",
+              borderRadius: "12px",
+              marginBottom: "12px",
+              width: "300px"
+            }}
+          >
+            <h3>{choice.matchName}</h3>
+            <p>Winner: {choice.winner}</p>
+<p>Score: {choice.score1} - {choice.score2}</p>
+<p>⚽ Player: {choice.player}</p>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
 const signIn = async () => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -32,6 +126,7 @@ const signIn = async () => {
 
 
 const savePick = async (matchId, choice) => {
+  
   const existingDoc = await getDoc(
     doc(db, "picks", user.uid + "_" + matchId)
   );
@@ -47,11 +142,16 @@ const savePick = async (matchId, choice) => {
   [matchId]: choice,
 }));
 
+const selectedMatch = todaysMatches.find(
+  m => m.id === matchId
+);
   await setDoc(doc(db, "picks", user.uid + "_" + matchId), {
   userId: user.uid,
   name: user.displayName,
   matchId: matchId,
-  match: matchId,
+  matchName: selectedMatch
+  ? `${selectedMatch.team1} vs ${selectedMatch.team2}`
+  : matchId,
   winnerPick: choice,
   playerPick: playerPicks[matchId] || "",
   scorePrediction: scorePicks[matchId] || {
@@ -83,10 +183,19 @@ setPage(nextPage);
 
   snapshot.docs.forEach((doc) => {
     const data = doc.data();
-
-    if (data.userId === user.uid) {
-      userPicks[data.matchId] =
-        data.winnerPick + " | Player: " + data.playerPick;
+   const match = todaysMatches.find(
+  m => m.id === data.matchId
+);
+   if (data.userId === user.uid) {
+      userPicks[data.matchId] = {
+  matchName: match
+    ? `${match.team1} vs ${match.team2}`
+    : data.matchId,
+  winner: data.winnerPick,
+  player: data.playerPick,
+  score1: data.scorePrediction?.team1 ?? 0,
+  score2: data.scorePrediction?.team2 ?? 0,
+};
     }
   });
 console.log("USER PICKS:", userPicks);
@@ -342,7 +451,18 @@ if (page === "matches") {
   return (
     
   <div key={match.id} className="match-card">
-    <h3>{match.team1} vs {match.team2}</h3>
+   <h3>
+  <img
+    src={`https://flagcdn.com/w40/${flags[match.team1]}.png`}
+    width="24"
+  />
+  {" "}{match.team1} vs{" "}
+  <img
+    src={`https://flagcdn.com/w40/${flags[match.team2]}.png`}
+    width="24"
+  />
+  {" "}{match.team2}
+</h3>
 {isLocked && (
   <p style={{ color: "red", fontWeight: "bold" }}>
     🔒 Picks Locked
@@ -448,8 +568,10 @@ if (page === "myPicks") {
               width: "300px"
             }}
           >
-            <h3>{matchId}</h3>
-            <p>{choice}</p>
+            <h3>{choice.matchName || matchId}</h3>
+            <p>Winner: {choice.winner}</p>
+<p>Score: {choice.score1} - {choice.score2}</p>
+<p>⚽ Player: {choice.player}</p>
           </div>
         ))
       )}
