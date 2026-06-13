@@ -428,13 +428,31 @@ disabled={isLocked}
 if (page === "myPicks") {
   return (
     <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
-      <h1>📋 My Picks</h1>
+      <h1>📌 My Picks</h1>
 
       <button onClick={() => setPage("home")}>Back</button>
 
-    {Object.entries(picks).map(([matchId, choice]) => (
-  <p key={matchId}>{matchId}: {choice}</p>
-))}
+      <br /><br />
+
+      {Object.entries(picks).length === 0 ? (
+        <p>No picks yet.</p>
+      ) : (
+        Object.entries(picks).map(([matchId, choice]) => (
+          <div
+            key={matchId}
+            style={{
+              background: "rgba(255,255,255,0.12)",
+              padding: "15px",
+              borderRadius: "12px",
+              marginBottom: "12px",
+              width: "300px"
+            }}
+          >
+            <h3>{matchId}</h3>
+            <p>{choice}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 }
