@@ -210,7 +210,7 @@ if (page === "admin") {
   onChange={(e) => setAdminWinner(e.target.value)}
 >
   <option value="">Select Winner</option>
-
+<option value="Draw">Draw</option> 
   {todaysMatches
     .find(m => m.id === adminMatchId)
     ?.team1 && (
