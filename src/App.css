@@ -1,66 +1,104 @@
 body {
   margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a, #1e3a8a);
-  color: white;
+  background: #286b3d;
+  color: #10251a;
   font-family: Arial, sans-serif;
-}body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #06162e, #123c69, #0b6e99);
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
 }
 
 button {
-  margin: 6px;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-input {
-  padding: 8px;
-  border-radius: 8px;
   border: none;
-  margin: 6px;
+  border-radius: 20px;
+  padding: 10px 18px;
+  font-weight: 800;
 }
 
-hr {
-  width: 80%;
-  border: 1px solid rgba(255,255,255,0.3);
+.app-shell {
+  min-height: 100vh;
+  background: #286b3d;
+  padding: 24px;
 }
-.match-card {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 20px;
-  margin: 20px auto;
-  width: 80%;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-h1 {
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: white;
-  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
-.match-card h3 {
-  font-size: 24px;
-  margin-bottom: 16px;
+.logo {
+  font-size: 28px;
+  font-weight: 900;
 }
 
-.match-card button {
-  background: white;
-  color: #123c69;
+.nav {
+  display: flex;
+  gap: 14px;
+  margin: 28px 0;
 }
 
-.match-card input {
-  min-width: 220px;
+.nav button {
+  background: transparent;
+  color: white;
+  font-size: 18px;
+}
+
+.nav .active {
+  background: #10251a;
+  color: white;
+}
+
+.hero-title {
+  color: white;
+  font-size: 42px;
+  font-weight: 900;
+}
+
+.card {
+  background: #fffaf0;
+  border: 5px solid #10251a;
+  border-radius: 28px;
+  padding: 18px;
+  margin: 18px 0;
+  box-shadow: 8px 8px 0 #12351f;
+}
+
+.yellow-card {
+  background: #ffdf5d;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.big-time {
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.small-label {
+  font-weight: 900;
+  opacity: 0.75;
+}
+
+.highlight {
+  background: #ffe889;
+  border-radius: 18px;
+  padding: 8px 12px;
+}
+
+@media (max-width: 600px) {
+  .app-shell {
+    padding: 18px;
+  }
+
+  .hero-title {
+    font-size: 34px;
+  }
+
+  .big-time {
+    font-size: 30px;
+  }
 }

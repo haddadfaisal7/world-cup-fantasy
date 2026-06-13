@@ -580,16 +580,7 @@ if (page === "myPicks") {
 }
 
 return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#0f172a",
-      color: "white",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: "14px"
-    }}>
+    <div className="app-shell">
       <h1>🏆 World Cup Fantasy</h1>
 
       {user ? (
