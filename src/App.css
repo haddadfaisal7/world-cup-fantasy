@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  background: #286b3d;
-  color: #10251a;
+  background: #dff4ff;
+  color: #102525;
   font-family: Arial, sans-serif;
 }
 
@@ -15,7 +15,11 @@ button {
 
 .app-shell {
   min-height: 100vh;
-  background: #286b3d;
+  background: linear-gradient(
+    180deg,
+    #dff4ff 0%,
+    #ccecff 100%
+  );
   padding: 24px;
 }
 
@@ -101,4 +105,51 @@ button {
   .big-time {
     font-size: 30px;
   }
+}
+.welcome-card {
+  background: white;
+  padding: 24px;
+  border-radius: 20px;
+  margin: 20px 0;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  width: 90%;
+  max-width: 700px;
+  text-align: center;
+}
+
+.welcome-card h2 {
+  margin: 0;
+  color: #102525;
+}
+
+.welcome-card p {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2b6cb0;
+}
+.app-shell > button {
+  background: white;
+  color: #102525;
+  margin: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.app-shell > button:hover {
+  background: #dff4ff;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  width: 90%;
+  max-width: 1200px;
+  margin-top: 30px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }

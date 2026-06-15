@@ -10,6 +10,7 @@ const [page, setPage] = useState("home");
 const [picks, setPicks] = useState({}); 
 const [playerPicks, setPlayerPicks] = useState({});
 const [leaderboard, setLeaderboard] = useState([]);
+const [points, setPoints] = useState(0);
 const [todaysMatches, setTodaysMatches] = useState([]);
 const [allPredictions, setAllPredictions] = useState([]); 
 const [scorePicks, setScorePicks] = useState({});
@@ -547,7 +548,7 @@ disabled={isLocked}
 
 if (page === "myPicks") {
   return (
-    <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
+    <div style={{ padding: "20px", color: "#102525", background: "#dff4ff", minHeight: "100vh" }}>
       <h1>📌 My Picks</h1>
 
       <button onClick={() => setPage("home")}>Back</button>
@@ -580,35 +581,71 @@ if (page === "myPicks") {
 }
 
 return (
-    <div className="app-shell">
-      <h1>🏆 World Cup Fantasy</h1>
+  <div className="app-shell">
+    <h1 style={{ fontSize: "48px", marginBottom: "10px" }}>
+      🏆 World Cup Fantasy
+    </h1>
 
-      {user ? (
-        <>
-          <h2>Welcome, {user.displayName}</h2>
-          <p>Points: 0</p>
-          <button onClick={() => {
-  console.log("PREDICT BUTTON CLICKED");
-  loadMatches("matches");
-}}>
-  Predict Matches
-</button>
-          <button onClick={loadLeaderboard}>Leaderboard</button>
-         <button onClick={loadAllPredictions}>Everyone's Predictions</button>
-          <button onClick={loadPick}>My Picks</button>
-         {user?.email === ADMIN_EMAIL && (
-  <button onClick={() => loadMatches("admin")}>Admin</button>
-)}
-          <button onClick={logout}>Sign Out</button>
-        </>
-      ) : (
-        <>
-          <p>Predict World Cup matches and earn points!</p>
-          <button onClick={signIn}>Sign In</button>
-        </>
-      )}
-    </div>
-  );
+    {user ? (
+      <>
+        <div className="welcome-card">
+          <h2>Welcome, {user.displayName} 👋</h2>
+          <p>🏆 Points: {points}</p>
+        </div>
+
+        <button
+          onClick={() => {
+            console.log("PREDICT BUTTON CLICKED");
+            loadMatches("matches");
+          }}
+        >
+          Predict Matches
+        </button>
+
+        <button onClick={loadAllPredictions}>
+          Everyone's Predictions
+        </button>
+
+        <button onClick={loadPick}>
+          My Picks
+        </button>
+
+        {user?.email === ADMIN_EMAIL && (
+          <button onClick={() => loadMatches("admin")}>
+            Admin
+          </button>
+        )}
+
+        <button onClick={logout}>
+          Sign Out
+        </button>
+
+        <div className="dashboard-grid">
+          <div className="dashboard-card">
+            <h3>🏆 League Table</h3>
+            <p>Top players</p>
+          </div>
+
+          <div className="dashboard-card">
+            <h3>⏰ Next Match</h3>
+            <p>{todaysMatches.length} matches loaded</p>
+          </div>
+
+          <div className="dashboard-card">
+            <h3>📋 Latest Results</h3>
+            <p>Results coming soon</p>
+          </div>
+        </div>
+      </>
+    ) : (
+      <>
+        <p>Predict World Cup matches and earn points!</p>
+        <button onClick={signIn}>
+          Sign In
+        </button>
+      </>
+    )}
+  </div>
+);
 }
-
 export default App;
