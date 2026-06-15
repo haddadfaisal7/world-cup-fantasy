@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { auth } from "./firebase";
 import { db } from "./firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
@@ -19,6 +19,13 @@ const [adminWinner, setAdminWinner] = useState("");
 const [adminTeam1Score, setAdminTeam1Score] = useState("");
 const [adminTeam2Score, setAdminTeam2Score] = useState("");
 const [adminPlayerGoals, setAdminPlayerGoals] = useState("");
+useEffect(() => {
+  loadMatches("matches");
+  loadLeaderboard();
+}, []);
+const upcomingMatches = [...todaysMatches]
+  .filter((match) => new Date(match.date) >= new Date("June 11, 2026"))
+  .sort((a, b) => new Date(a.date) - new Date(b.date));
 const flags = {
   Mexico: "mx",
   "South Africa": "za",
@@ -622,14 +629,42 @@ return (
         </button>
 
         <div className="dashboard-grid">
-          <div className="dashboard-card">
+          <div
+  className="dashboard-card"
+  onClick={loadLeaderboard}
+  style={{ cursor: "pointer" }}
+>
             <h3>🏆 League Table</h3>
-            <p>Top players</p>
+
+          {leaderboard.slice(0, 3).map((player, index) => (
+  <p key={index}>
+    {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"} {player.name} - {player.points || 0} pts
+  </p>
+))}
           </div>
 
           <div className="dashboard-card">
-            <h3>⏰ Next Match</h3>
-            <p>{todaysMatches.length} matches loaded</p>
+            <h3>⏰ Next 3 Matches</h3>
+            {upcomingMatches.length > 0 ? (
+  upcomingMatches.slice(0, 3).map((match, index) => (
+    <div
+  key={index}
+  style={{
+    padding: "10px 0",
+    borderBottom: index < 2 ? "1px solid #e5e7eb" : "none",
+  }}
+>
+  <p style={{ margin: 0, fontWeight: "700" }}>
+    ⚽ {match.team1} vs {match.team2}
+  </p>
+  <p style={{ margin: "4px 0 0", fontSize: "14px", color: "#6b7280" }}>
+    🗓️ {match.date}
+  </p>
+</div>
+  ))
+) : (
+  <p>No upcoming matches</p>
+)}
           </div>
 
           <div className="dashboard-card">
