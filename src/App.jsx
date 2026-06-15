@@ -24,7 +24,7 @@ useEffect(() => {
   loadLeaderboard();
 }, []);
 const upcomingMatches = [...todaysMatches]
-  .filter((match) => new Date(match.date) >= new Date("June 11, 2026"))
+  .filter((match) => new Date(match.date) >= new Date())
   .sort((a, b) => new Date(a.date) - new Date(b.date));
 const flags = {
   Mexico: "mx",
@@ -641,6 +641,7 @@ return (
     {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"} {player.name} - {player.points || 0} pts
   </p>
 ))}
+
           </div>
 
           <div className="dashboard-card">
