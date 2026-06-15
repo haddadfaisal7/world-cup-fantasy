@@ -588,10 +588,11 @@ return (
 
     {user ? (
       <>
-        <div className="welcome-card">
-          <h2>Welcome, {user.displayName} 👋</h2>
-          <p>🏆 Points: {points}</p>
-        </div>
+<div className="welcome-card">
+  <h2>👋 Welcome back, {user.displayName}</h2>
+  <p>Ready to make your picks?</p>
+</div>
+        
 
         <button
           onClick={() => {
@@ -635,6 +636,11 @@ return (
             <h3>📋 Latest Results</h3>
             <p>Results coming soon</p>
           </div>
+        <div className="dashboard-card">
+  <h3>📊 Your Record</h3>
+  <p>✅ Correct Picks: 0</p>
+  <p>⚽ Player Goals: 0</p>
+</div>
         </div>
       </>
     ) : (
