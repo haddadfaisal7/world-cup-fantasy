@@ -24,9 +24,21 @@ useEffect(() => {
   loadLeaderboard();
 }, []);
 const upcomingMatches = [...todaysMatches]
-  .filter((match) => new Date(match.date) >= new Date())
-  .sort((a, b) => new Date(a.date) - new Date(b.date));
-const flags = {
+  .filter((match) => new Date(match.kickoffTime || match.kickofftime) > new Date())
+  .sort(
+    (a, b) =>
+      new Date(a.kickoffTime || a.kickofftime) -
+      new Date(b.kickoffTime || b.kickofftime)
+  
+  );
+const latestResults = [...todaysMatches]
+  .filter((match) => match.completed === true)
+  .sort(
+    (a, b) =>
+      new Date(b.kickoffTime || b.kickofftime) -
+      new Date(a.kickoffTime || a.kickofftime)
+  );
+  const flags = {
   Mexico: "mx",
   "South Africa": "za",
   "South Korea": "kr",
@@ -669,9 +681,18 @@ return (
           </div>
 
           <div className="dashboard-card">
-            <h3>📋 Latest Results</h3>
-            <p>Results coming soon</p>
-          </div>
+  <h3>📋 Latest Results</h3>
+
+  {latestResults.length > 0 ? (
+    latestResults.slice(0, 3).map((match, index) => (
+      <div key={index} style={{ padding: "8px 0" }}>
+        <p>⚽ {match.team1} vs {match.team2}</p>
+      </div>
+    ))
+  ) : (
+    <p>No results yet</p>
+  )}
+</div>
         <div className="dashboard-card">
   <h3>📊 Your Record</h3>
   <p>✅ Correct Picks: 0</p>
