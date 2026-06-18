@@ -686,7 +686,7 @@ return (
   {latestResults.length > 0 ? (
     latestResults.slice(0, 3).map((match, index) => (
       <div key={index} style={{ padding: "8px 0" }}>
-        <p>⚽ {match.team1} vs {match.team2}</p>
+      <p> ⚽ {match.team1} {match.team1Score} - {match.team2Score} {match.team2} </p>
       </div>
     ))
   ) : (
