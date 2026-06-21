@@ -4,6 +4,7 @@ import { auth } from "./firebase";
 import { db } from "./firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 function App() {
 const [user, setUser] = useState(null);
 const [page, setPage] = useState("home");
@@ -185,7 +186,12 @@ const selectedMatch = todaysMatches.find(
 };
 const loadMatches = async (nextPage = "Matches") => {
   console.log("LOAD MATCHES CLICKED");
-  const snapshot = await getDocs(collection(db, "Matches"));
+  const q = query(
+  collection(db, "Matches"),
+  orderBy("day", "asc")
+);
+
+const snapshot = await getDocs(q);
 
  const matches = snapshot.docs.map((doc) => ({
   id: doc.id,
