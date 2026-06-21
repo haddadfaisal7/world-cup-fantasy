@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { auth } from "./firebase";
 import { db } from "./firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs, query, orderBy } from "firebase/firestore";
+
 function App() {
 const [user, setUser] = useState(null);
 const [page, setPage] = useState("home");
@@ -186,10 +186,9 @@ const selectedMatch = todaysMatches.find(
 };
 const loadMatches = async (nextPage = "Matches") => {
   console.log("LOAD MATCHES CLICKED");
-  const q = query(
-  collection(db, "Matches"),
-  orderBy("day", "asc")
-);
+  const q = collection(db, "Matches");
+  
+  
 
 const snapshot = await getDocs(q);
 
@@ -476,7 +475,17 @@ if (page === "matches") {
 
   return (
     
-  <div key={match.id} className="match-card">
+  <div
+  key={match.id}
+  style={{
+    background: "white",
+    color: "#102525",
+    borderRadius: "20px",
+    padding: "25px",
+    marginBottom: "25px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.15)"
+  }}
+>
    <h3>
   <img
     src={`https://flagcdn.com/w40/${flags[match.team1]}.png`}
@@ -497,6 +506,16 @@ if (page === "matches") {
     <button
   disabled={isLocked}
   onClick={() => savePick(match.id, match.team1)}
+  style={{
+    background: picks[match.id] === match.team1 ? "#2563eb" : "#f8fafc",
+    color: picks[match.id] === match.team1 ? "white" : "#102525",
+    border: "1px solid #dbeafe",
+    borderRadius: "999px",
+    padding: "10px 18px",
+    margin: "6px",
+    fontWeight: "700",
+    cursor: "pointer"
+  }}
 >
       {match.team1}
     </button>
@@ -505,12 +524,32 @@ if (page === "matches") {
   <button
   disabled={isLocked}
   onClick={() => savePick(match.id, "Draw")}
+  style={{
+    background: picks[match.id] === "Draw" ? "#2563eb" : "#f8fafc",
+    color: picks[match.id] === "Draw" ? "white" : "#102525",
+    border: "1px solid #dbeafe",
+    borderRadius: "999px",
+    padding: "10px 18px",
+    margin: "6px",
+    fontWeight: "700",
+    cursor: "pointer"
+  }}
 >
       Draw
     </button>
 <button
   disabled={isLocked}
   onClick={() => savePick(match.id, match.team2)}
+   style={{
+    background: picks[match.id] === "Draw" ? "#2563eb" : "#f8fafc",
+    color: picks[match.id] === "Draw" ? "white" : "#102525",
+    border: "1px solid #dbeafe",
+    borderRadius: "999px",
+    padding: "10px 18px",
+    margin: "6px",
+    fontWeight: "700",
+    cursor: "pointer"
+  }}
 >
   {match.team2}
 </button>
