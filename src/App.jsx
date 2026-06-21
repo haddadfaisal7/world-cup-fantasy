@@ -147,7 +147,10 @@ const signIn = async () => {
 
 
 const savePick = async (matchId, choice) => {
-  
+  setPicks((prev) => ({
+  ...prev,
+  [matchId]: choice,
+}));
   const existingDoc = await getDoc(
     doc(db, "picks", user.uid + "_" + matchId)
   );
@@ -465,7 +468,7 @@ if (page === "leaderboard") {
 }
 if (page === "matches") {
   return (
-    <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
+    <div style={{ padding: "20px", color: "#102525", background: "#dbeafe", minHeight: "100vh" }}>
       <h1>⚽ Match Predictions</h1>
 
       <button onClick={() => setPage("home")}>Back</button>
@@ -477,24 +480,34 @@ if (page === "matches") {
     
   <div
   key={match.id}
+  
   style={{
-    background: "white",
-    color: "#102525",
-    borderRadius: "20px",
-    padding: "25px",
-    marginBottom: "25px",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.15)"
+  background: "rgba(255,255,255,0.9)",
+  color: "#102525",
+  borderRadius: "24px",
+  padding: "24px",
+  margin: "24px auto",
+  maxWidth: "650px",
+  boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+  textAlign: "center"
+}}
+>
+   <h3
+   style={{
+    fontSize: "28px",
+    marginBottom: "20px",
+    fontWeight: "700"
   }}
 >
-   <h3>
+  
   <img
     src={`https://flagcdn.com/w40/${flags[match.team1]}.png`}
-    width="24"
+    width="40"
   />
   {" "}{match.team1} vs{" "}
   <img
     src={`https://flagcdn.com/w40/${flags[match.team2]}.png`}
-    width="24"
+    width="40"
   />
   {" "}{match.team2}
 </h3>
@@ -507,14 +520,15 @@ if (page === "matches") {
   disabled={isLocked}
   onClick={() => savePick(match.id, match.team1)}
   style={{
-    background: picks[match.id] === match.team1 ? "#2563eb" : "#f8fafc",
+    background: picks[match.id] === match.team1 ? "#2563eb" : "#dbeafe",
     color: picks[match.id] === match.team1 ? "white" : "#102525",
     border: "1px solid #dbeafe",
     borderRadius: "999px",
-    padding: "10px 18px",
-    margin: "6px",
+    padding: "12px 24px",
+    margin: "5px",
     fontWeight: "700",
-    cursor: "pointer"
+    cursor: "pointer",
+    transition: "all 0.2s ease"
   }}
 >
       {match.team1}
@@ -525,14 +539,15 @@ if (page === "matches") {
   disabled={isLocked}
   onClick={() => savePick(match.id, "Draw")}
   style={{
-    background: picks[match.id] === "Draw" ? "#2563eb" : "#f8fafc",
+    background: picks[match.id] === "Draw" ? "#2563eb" : "#dbeafe",
     color: picks[match.id] === "Draw" ? "white" : "#102525",
     border: "1px solid #dbeafe",
     borderRadius: "999px",
-    padding: "10px 18px",
-    margin: "6px",
+    padding: "12px 24px",
+    margin: "5px",
     fontWeight: "700",
-    cursor: "pointer"
+    cursor: "pointer",
+    transition: "all 0.2s ease"
   }}
 >
       Draw
@@ -541,14 +556,15 @@ if (page === "matches") {
   disabled={isLocked}
   onClick={() => savePick(match.id, match.team2)}
    style={{
-    background: picks[match.id] === "Draw" ? "#2563eb" : "#f8fafc",
-    color: picks[match.id] === "Draw" ? "white" : "#102525",
+    background: picks[match.id] === match.team2 ? "#2563eb" : "#dbeafe",
+    color: picks[match.id] === match.team2 ? "white" : "#102525",
     border: "1px solid #dbeafe",
     borderRadius: "999px",
-    padding: "10px 18px",
-    margin: "6px",
+    padding: "12px 24px",
+    margin: "5px",
     fontWeight: "700",
-    cursor: "pointer"
+    cursor: "pointer",
+    transition: "all 0.2s ease"
   }}
 >
   {match.team2}
