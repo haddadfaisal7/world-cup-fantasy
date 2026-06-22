@@ -23,6 +23,7 @@ const [adminPlayerGoals, setAdminPlayerGoals] = useState("");
 useEffect(() => {
   loadMatches("matches");
   loadLeaderboard();
+  loadAllPredictions();
 }, []);
 const upcomingMatches = [...todaysMatches]
   .filter((match) => new Date(match.kickoffTime || match.kickofftime) > new Date())
@@ -234,14 +235,49 @@ console.log("USER PICKS:", userPicks);
 const saveResult = async () => {
   await setDoc(doc(db, "results", adminMatchId), {
     winner: adminWinner,
-team1Score: Number(adminTeam1Score),
-team2Score: Number(adminTeam2Score),
-playerGoals: adminPlayerGoals,
-completed: true,
+    team1Score: Number(adminTeam1Score),
+    team2Score: Number(adminTeam2Score),
+    playerGoals: adminPlayerGoals,
+    completed: true,
   });
 
+  await setDoc(
+    doc(db, "Matches", adminMatchId),
+    {
+      winner: adminWinner,
+      team1Score: Number(adminTeam1Score),
+      team2Score: Number(adminTeam2Score),
+      playerGoals: adminPlayerGoals,
+      completed: true,
+    },
+    { merge: true }
+  );
+
+
+const picksSnapshot = await getDocs(collection(db, "picks"));
+
+picksSnapshot.docs.forEach(async (pickDoc) => {
+  const pick = pickDoc.data();
+
+  if (pick.matchId === adminMatchId) {
+    const exactScore =
+      Number(pick.scorePrediction?.team1) === Number(adminTeam1Score) &&
+      Number(pick.scorePrediction?.team2) === Number(adminTeam2Score);
+
+    await setDoc(
+      doc(db, "picks", pickDoc.id),
+      { exactScore: exactScore },
+      { merge: true }
+    );
+  }
+});
+
+
   alert("Result saved!");
+  loadMatches("matches");
 };
+
+  
 const loadAllPredictions = async () => {
   const snapshot = await getDocs(collection(db, "picks"));
 
@@ -796,8 +832,22 @@ return (
 </div>
         <div className="dashboard-card">
   <h3>📊 Your Record</h3>
-  <p>✅ Correct Picks: 0</p>
-  <p>⚽ Player Goals: 0</p>
+  <p>
+  ✅ Exact Scores: {
+    allPredictions.filter((pick) =>
+      pick.user === user.email &&
+      pick.exactScore === true
+    ).length
+  }
+</p>
+
+<p>
+  ⚽ Player Goals: {
+    allPredictions.filter(
+      (pick) => pick.user === user.email && pick.playerCorrect === true
+    ).length
+  }
+</p>
 </div>
         </div>
       </>
