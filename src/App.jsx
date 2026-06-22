@@ -428,7 +428,15 @@ if (page === "admin") {
 }
 if (page === "allpredictions") {
   return (
-    <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
+    <div
+  style={{
+    minHeight: "100vh",
+    padding: "30px",
+    background: "linear-gradient(180deg, #dff4ff 0%, #ccecff 100%)",
+    color: "#102525",
+    textAlign: "center"
+  }}
+>
       <h1>Everyone's Predictions</h1>
 
       <button onClick={() => setPage("home")}>
@@ -448,24 +456,56 @@ if (page === "allpredictions") {
 }
 if (page === "leaderboard") {
   return (
-    <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
-      <h1>🏆 Leaderboard</h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "30px",
+        background: "linear-gradient(180deg, #dff4ff 0%, #ccecff 100%)",
+        color: "#102525",
+        textAlign: "center",
+      }}
+    >
+      <h1 style={{ fontSize: "42px", marginBottom: "10px" }}>
+        🏆 Leaderboard
+      </h1>
 
       <button onClick={() => setPage("home")}>Back</button>
 
-      {leaderboard.map((player, index) => (
-        <div key={index}>
-          <h3>
-            #{index + 1} {player.name}
-          </h3>
-          
-          <p>Points: {player.points || 0}</p>
-          <hr />
-        </div>
-      ))}
+      <div style={{ marginTop: "30px" }}>
+        {leaderboard.map((player, index) => (
+          <div
+            key={index}
+            style={{
+              background: "rgba(255,255,255,0.9)",
+              color: "#102525",
+              borderRadius: "20px",
+              padding: "18px 22px",
+              margin: "16px auto",
+              maxWidth: "600px",
+              boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+            }}
+          >
+            <h3>
+              {index === 0
+                ? "🥇"
+                : index === 1
+                ? "🥈"
+                : index === 2
+                ? "🥉"
+                : `#${index + 1}`}{" "}
+              {player.name}
+            </h3>
+
+            <p style={{ fontWeight: "700", color: "#2563eb" }}>
+              {player.points || 0} pts
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
+
 if (page === "matches") {
   return (
     <div style={{ padding: "20px", color: "#102525", background: "#dbeafe", minHeight: "100vh" }}>
