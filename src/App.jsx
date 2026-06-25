@@ -594,7 +594,12 @@ if (page === "matches") {
 )}
     <button
   disabled={isLocked}
-  onClick={() => savePick(match.id, match.team1)}
+  onClick={() =>
+  setPicks((prev) => ({
+    ...prev,
+    [match.id]: match.team1,
+  }))
+}
   style={{
     background: picks[match.id] === match.team1 ? "#2563eb" : "#dbeafe",
     color: picks[match.id] === match.team1 ? "white" : "#102525",
@@ -613,7 +618,12 @@ if (page === "matches") {
   
   <button
   disabled={isLocked}
-  onClick={() => savePick(match.id, "Draw")}
+  onClick={() =>
+  setPicks((prev) => ({
+    ...prev,
+    [match.id]: "Draw",
+  }))
+}
   style={{
     background: picks[match.id] === "Draw" ? "#2563eb" : "#dbeafe",
     color: picks[match.id] === "Draw" ? "white" : "#102525",
@@ -630,7 +640,12 @@ if (page === "matches") {
     </button>
 <button
   disabled={isLocked}
-  onClick={() => savePick(match.id, match.team2)}
+  onClick={() =>
+  setPicks((prev) => ({
+    ...prev,
+    [match.id]: match.team2,
+  }))
+}
    style={{
     background: picks[match.id] === match.team2 ? "#2563eb" : "#dbeafe",
     color: picks[match.id] === match.team2 ? "white" : "#102525",
@@ -693,7 +708,24 @@ disabled={isLocked}
     }))
   }
 />
-    
+    <button
+  onClick={() => savePick(match.id, picks[match.id])}
+  disabled={!picks[match.id] || isLocked}
+  style={{
+    marginTop: "12px",
+    padding: "10px 20px",
+    background: "#22c55e",
+    color: "white",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    width: "100%",
+  }}
+>
+  💾 Save Pick
+</button>
+
     <p>Your pick: {picks[match.id] || "None"}</p>
 
     <hr />
