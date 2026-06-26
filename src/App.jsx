@@ -13,9 +13,11 @@ const [playerPicks, setPlayerPicks] = useState({});
 const [leaderboard, setLeaderboard] = useState([]);
 const [points, setPoints] = useState(0);
 const [todaysMatches, setTodaysMatches] = useState([]);
-const [allPredictions, setAllPredictions] = useState([]); 
 const [scorePicks, setScorePicks] = useState({});
 const [adminMatchId, setAdminMatchId] = useState("");
+const [selectedMatch, setSelectedMatch] = useState("");
+const [allPredictions, setAllPredictions] = useState([]);
+const [communityStats, setCommunityStats] = useState([]);
 const [adminWinner, setAdminWinner] = useState(""); 
 const [adminTeam1Score, setAdminTeam1Score] = useState("");
 const [adminTeam2Score, setAdminTeam2Score] = useState("");
@@ -24,6 +26,7 @@ useEffect(() => {
   loadMatches("matches");
   loadLeaderboard();
   loadAllPredictions();
+loadCommunityStats();
 }, []);
 const upcomingMatches = [...todaysMatches]
   .filter((match) => new Date(match.kickoffTime || match.kickofftime) > new Date())
@@ -102,6 +105,51 @@ const latestResults = [...todaysMatches]
   Panama: "pa"
 };
 const ADMIN_EMAIL = "haddad.faisal7@gmail.com";
+if (page === "predictions") {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "30px",
+        background: "linear-gradient(180deg, #dff4ff 0%, #ccecff 100%)",
+        color: "#102525",
+        textAlign: "center",
+      }}
+    >
+      <h1>👥 Everyone's Predictions</h1>
+
+      <button onClick={() => setPage("matches")}>Back</button>
+
+      <div style={{ marginTop: "25px" }}>
+        {allPredictions.length === 0 ? (
+          <p>No predictions yet for this match.</p>
+        ) : (
+          allPredictions.map((pick, index) => (
+            <div
+              key={index}
+              style={{
+                background: "rgba(255,255,255,0.9)",
+                borderRadius: "18px",
+                padding: "16px",
+                margin: "14px auto",
+                maxWidth: "550px",
+                boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+              }}
+            >
+              <h3>{pick.name || pick.user}</h3>
+              <p>🏆 Winner: {pick.winner || "None"}</p>
+              <p>
+                📊 Score: {pick.scorePrediction?.team1 ?? "-"} -{" "}
+                {pick.scorePrediction?.team2 ?? "-"}
+              </p>
+              <p>⚽ Player: {pick.playerPick || "None"}</p>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
 if (page === "myPicks") {
   return (
     <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
@@ -285,6 +333,73 @@ const loadAllPredictions = async () => {
 
   setAllPredictions(data);
   setPage("allpredictions");
+};
+const loadCommunityStats = async () => {
+  const picksSnapshot = await getDocs(collection(db, "picks"));
+  const matchesSnapshot = await getDocs(collection(db, "Matches"));
+
+  const picksData = picksSnapshot.docs.map((doc) => doc.data());
+
+  const matchesData = matchesSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  const lockedMatches = matchesData.filter(
+    (match) => new Date() > new Date(match.kickoffTime || match.kickofftime)
+  );
+
+  const stats = lockedMatches
+  .sort(
+    (a, b) =>
+      new Date(b.kickoffTime || b.kickofftime) -
+      new Date(a.kickoffTime || a.kickofftime)
+  )
+  .slice(0, 3)
+  .map((match) => {
+    const matchPicks = picksData.filter(
+      (pick) => pick.matchid === match.id || pick.matchId === match.id
+    );
+
+    const total = matchPicks.length || 1;
+
+    const team1Count = matchPicks.filter((pick) => pick.winnerPick === match.team1).length;
+    const drawCount = matchPicks.filter((pick) => pick.winnerPick === "Draw").length;
+    const team2Count = matchPicks.filter((pick) => pick.winnerPick === match.team2).length;
+
+    const players = {};
+    matchPicks.forEach((pick) => {
+      const player = pick.playerPick || pick.playerPickName || "";
+      if (player) {
+        players[player] = (players[player] || 0) + 1;
+      }
+    });
+
+    const topPlayer =
+      Object.entries(players).sort((a, b) => b[1] - a[1])[0]?.[0] || "None";
+
+    return {
+      match: `${match.team1} vs ${match.team2}`,
+      team1: match.team1,
+      team2: match.team2,
+      totalPredictions: total,
+      team1Percent: Math.round((team1Count / total) * 100),
+      drawPercent: Math.round((drawCount / total) * 100),
+      team2Percent: Math.round((team2Count / total) * 100),
+      topPlayer,
+    };
+  });
+
+  setCommunityStats(stats);
+};
+const loadPredictions = async (matchId) => {
+  const snapshot = await getDocs(collection(db, "picks"));
+
+  const predictions = snapshot.docs
+    .map(doc => doc.data())
+    .filter(pick => pick.matchid === matchid || pick.matchId === matchid);
+
+  setAllPredictions(predictions);
 };
 const loadLeaderboard = async () => {
   const picksSnapshot = await getDocs(collection(db, "picks"));
@@ -727,7 +842,26 @@ disabled={isLocked}
 </button>
 
     <p>Your pick: {picks[match.id] || "None"}</p>
-
+<button
+  onClick={() => {
+    setSelectedMatch(match.id);
+    loadPredictions(match.id);
+    setPage("predictions");
+  }}
+  style={{
+    marginTop: "10px",
+    padding: "10px 16px",
+    background: "#3b82f6",
+    color: "white",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    width: "100%"
+  }}
+>
+  👥 Everyone's Predictions
+</button>
     <hr />
   </div>
 )})}
@@ -863,23 +997,25 @@ return (
   )}
 </div>
         <div className="dashboard-card">
-  <h3>📊 Your Record</h3>
-  <p>
-  ✅ Exact Scores: {
-    allPredictions.filter((pick) =>
-      pick.user === user.email &&
-      pick.exactScore === true
-    ).length
-  }
-</p>
+  <h3>📊 Community Stats</h3>
+  {communityStats.length === 0 ? (
+  <p>No community stats yet.</p>
+) : (
+  communityStats.map((match, index) => (
+    <div key={index} style={{ marginBottom: "15px" }}>
+      <strong>{match.match}</strong>
 
-<p>
-  ⚽ Player Goals: {
-    allPredictions.filter(
-      (pick) => pick.user === user.email && pick.playerCorrect === true
-    ).length
-  }
-</p>
+      <p>🏆 {match.team1}: {match.team1Percent}%</p>
+      <p>🤝 Draw: {match.drawPercent}%</p>
+      <p>🏆 {match.team2}: {match.team2Percent}%</p>
+
+      <p>🔥 Most Picked Player</p>
+      <p>{match.topPlayer}</p>
+
+      <hr />
+    </div>
+  ))
+)}
 </div>
         </div>
       </>
