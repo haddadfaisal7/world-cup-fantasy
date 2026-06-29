@@ -153,11 +153,37 @@ if (page === "predictions") {
 if (page === "myPicks") {
   return (
     <div style={{ padding: "20px", color: "white", background: "#0f172a", minHeight: "100vh" }}>
-      <h1>📌 My Picks</h1>
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+  }}
+>
+  <h1 style={{ margin: 0 }}>📋 My Picks</h1>
 
-      <button onClick={() => setPage("home")}>Back</button>
+  <button
+    onClick={() => setPage("home")}
+    style={{
+      background: "white",
+      color: "1e293b",
+      border: "1xp solid #dbeafe",
+      borderRadius: "999px",
+      padding: "10px 20px",
+      cursor: "pointer",
+      fontWeight: "600",
+    }}
+  >
+    ← Home
+  </button>
+</div>
 
-      <br /><br />
+<p style={{ color: "#dbeafe", marginBottom: "25px" }}>
+  {Object.keys(picks).length} predictions locked in.
+</p>
+      
+      
 
       {Object.entries(picks).length === 0 ? (
         <p>No picks yet.</p>
