@@ -25,7 +25,6 @@ const [adminPlayerGoals, setAdminPlayerGoals] = useState("");
 useEffect(() => {
   loadMatches("matches");
   loadLeaderboard();
-  loadAllPredictions();
 loadCommunityStats();
 }, []);
 const upcomingMatches = [...todaysMatches]
@@ -105,6 +104,19 @@ const latestResults = [...todaysMatches]
   Panama: "pa"
 };
 const ADMIN_EMAIL = "haddad.faisal7@gmail.com";
+const loadPredictions = async (matchId) => {
+  const snapshot = await getDocs(collection(db, "picks"));
+
+  const predictions = snapshot.docs
+    .map(doc => doc.data())
+    .filter(
+  (pick) =>
+    String(pick.matchId || pick.matchid).trim() === String(matchId).trim()
+
+);
+console.log(predictions);
+  setAllPredictions(predictions);
+};
 if (page === "predictions") {
   return (
     <div
@@ -118,7 +130,7 @@ if (page === "predictions") {
     >
       <h1>👥 Everyone's Predictions</h1>
 
-      <button onClick={() => setPage("matches")}>Back</button>
+      <button onClick={() => setPage("myPicks")}>Back</button>
 
       <div style={{ marginTop: "25px" }}>
         {allPredictions.length === 0 ? (
@@ -188,6 +200,7 @@ if (page === "myPicks") {
       {Object.entries(picks).length === 0 ? (
         <p>No picks yet.</p>
       ) : (
+        
         Object.entries(picks).map(([matchId, choice]) => (
           <div
             key={matchId}
@@ -203,10 +216,35 @@ if (page === "myPicks") {
             <p>Winner: {choice.winner}</p>
 <p>Score: {choice.score1} - {choice.score2}</p>
 <p>⚽ Player: {choice.player}</p>
+          {new Date() >= new Date(
+  todaysMatches.find((m) => m.id === (choice.matchId || choice.matchid || matchId))?.kickoffTime ||
+  todaysMatches.find((m) => m.id === (choice.matchId || choice.matchid || matchId))?.kickofftime
+) && (
+  <button
+    onClick={() => {
+      const realMatchId = choice.matchId || choice.matchid || matchId;
+      setSelectedMatch(realMatchId);
+      setPage("predictions");
+      loadPredictions(realMatchId);
+    }}
+    style={{
+      marginTop: "10px",
+      padding: "8px 14px",
+      background: "#3b82f6",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    👥 View Everyone's Predictions
+  </button>
+)}
           </div>
         ))
       )}
     </div>
+    
   );
 }
 const signIn = async () => {
@@ -351,15 +389,7 @@ picksSnapshot.docs.forEach(async (pickDoc) => {
   loadMatches("matches");
 };
 
-  
-const loadAllPredictions = async () => {
-  const snapshot = await getDocs(collection(db, "picks"));
 
-  const data = snapshot.docs.map((doc) => doc.data());
-
-  setAllPredictions(data);
-  setPage("allpredictions");
-};
 const loadCommunityStats = async () => {
   const picksSnapshot = await getDocs(collection(db, "picks"));
   const matchesSnapshot = await getDocs(collection(db, "Matches"));
@@ -418,15 +448,7 @@ const loadCommunityStats = async () => {
 
   setCommunityStats(stats);
 };
-const loadPredictions = async (matchId) => {
-  const snapshot = await getDocs(collection(db, "picks"));
 
-  const predictions = snapshot.docs
-    .map(doc => doc.data())
-    .filter(pick => pick.matchid === matchid || pick.matchId === matchid);
-
-  setAllPredictions(predictions);
-};
 const loadLeaderboard = async () => {
   const picksSnapshot = await getDocs(collection(db, "picks"));
 const resultsSnapshot = await getDocs(collection(db, "results"));
@@ -603,34 +625,7 @@ if (page === "admin") {
     </div>
   );
 }
-if (page === "allpredictions") {
-  return (
-    <div
-  style={{
-    minHeight: "100vh",
-    padding: "30px",
-    background: "linear-gradient(180deg, #dff4ff 0%, #ccecff 100%)",
-    color: "#102525",
-    textAlign: "center"
-  }}
->
-      <h1>Everyone's Predictions</h1>
 
-      <button onClick={() => setPage("home")}>
-        Back
-      </button>
-
-      {allPredictions.map((pick, index) => (
-  <div key={index}>
-    <h3>{pick.name}</h3>
-    <p>Winner: {pick.winnerPick}</p>
-    <p>Player: {pick.playerPick}</p>
-    <hr />
-  </div>
-))}
-    </div>
-  );
-}
 if (page === "leaderboard") {
   return (
     <div
@@ -868,26 +863,10 @@ disabled={isLocked}
 </button>
 
     <p>Your pick: {picks[match.id] || "None"}</p>
-<button
-  onClick={() => {
-    setSelectedMatch(match.id);
-    loadPredictions(match.id);
-    setPage("predictions");
-  }}
-  style={{
-    marginTop: "10px",
-    padding: "10px 16px",
-    background: "#3b82f6",
-    color: "white",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    width: "100%"
-  }}
->
-  👥 Everyone's Predictions
-</button>
+
+
+
+
     <hr />
   </div>
 )})}
@@ -951,9 +930,7 @@ return (
           Predict Matches
         </button>
 
-        <button onClick={loadAllPredictions}>
-          Everyone's Predictions
-        </button>
+        
 
         <button onClick={loadPick}>
           My Picks
