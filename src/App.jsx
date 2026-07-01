@@ -2,7 +2,12 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { auth } from "./firebase";
 import { db } from "./firebase";
-import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { doc, setDoc, getDoc, collection, getDocs, query, orderBy } from "firebase/firestore";
 
 function App() {
@@ -23,10 +28,18 @@ const [adminTeam1Score, setAdminTeam1Score] = useState("");
 const [adminTeam2Score, setAdminTeam2Score] = useState("");
 const [adminPlayerGoals, setAdminPlayerGoals] = useState("");
 useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+  });
+
+  return () => unsubscribe();
+}, []);
+useEffect(() => {
   loadMatches("matches");
   loadLeaderboard();
-loadCommunityStats();
+  loadCommunityStats();
 }, []);
+ 
 const upcomingMatches = [...todaysMatches]
   .filter((match) => new Date(match.kickoffTime || match.kickofftime) > new Date())
   .sort(
